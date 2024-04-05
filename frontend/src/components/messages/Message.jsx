@@ -1,7 +1,6 @@
 import { useAuthContext } from "../../context/AuthContext"
 import useConversation from "../../zustand/useConversation";
 import { extractTime } from "../../utils/extractTime";
-import ImagePreviewer from "./ImagePreviewer";
 
 import { useState } from "react";
 import { PhotoProvider, PhotoView } from 'react-photo-view';
