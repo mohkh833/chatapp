@@ -8,6 +8,8 @@ This is a simple chat application built using MongoDB, Express.js, and React. It
 - User login/logout functionality
 - Real-time chat functionality
 - User search functionality
+- Seen/ Not seen message functionality
+- User can upload images 
 - Online/Offline status indication
 
 ## Technologies Used
@@ -74,13 +76,14 @@ npm start
 3. Click on a user's name to start a conversation.
 4. Chat with the selected user in real-time.
 5. Users' online/offline status is indicated beside their username.
+6. Users Message status is indicated beside message
 
 ## Future Improvements
 
 - Implement user profile management functionality.
-- Add support for multimedia messages (images, videos).
+- Add support for multimedia messages (videos).
 - Enhance the user interface and user experience.
-- Implement typing indicators and read receipts in chat.
+- Implement typing indicators in chat.
 
 ## Contributing
 
