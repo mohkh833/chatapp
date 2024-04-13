@@ -1,8 +1,7 @@
 import { useAuthContext } from "../../context/AuthContext"
 import useConversation from "../../zustand/useConversation";
 import { extractTime } from "../../utils/extractTime";
-
-import { useState } from "react";
+import { FaEye } from "react-icons/fa";
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 const Message = ({message}) => {
@@ -15,10 +14,7 @@ const Message = ({message}) => {
 	const profilePic = fromMe ? authUser.profilePic : selectedConversation?.profilePic;
 	const bubbleBgColor = fromMe ? "bg-blue-500" : "";
     const shakeClass = message.shouldShake ? "shake" : ""
-    const [imgSrc,setImgSrc] = useState("")
-    const [isViewerOpen, setIsViewerOpen] = useState(false);
     
-
  
     return (
         <div className={`chat ${chatClassName}`}>
@@ -32,7 +28,7 @@ const Message = ({message}) => {
             </div>
             {message?.isImage ?             <div className={`chat-bubble text-white bg-blue-500 pb-2 ${bubbleBgColor} ${shakeClass}`}>
                     <label htmlFor="my_modal_7">
-  
+                    {fromMe && message.isRead && <div className="text-xs opacity-50"><FaEye /></div>}
                         <PhotoProvider>
                             <PhotoView src={message.message}>
                                 <img  className=" h-40 w-40 cursor-pointer" src={message.message} />
@@ -40,11 +36,9 @@ const Message = ({message}) => {
                         </PhotoProvider>
                     </label>
 
-                   
-                        {/* <ImagePreviewer imgSrc={message.message} /> */}
-                    
             </div> : 
             <div className={`chat-bubble text-white bg-blue-500 pb-2 ${bubbleBgColor} ${shakeClass}`}>
+                {fromMe && message.isRead && <div className="text-xs opacity-50"><FaEye /></div>}
                     {message.message}
             </div>
             }

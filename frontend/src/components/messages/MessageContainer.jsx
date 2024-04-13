@@ -4,9 +4,9 @@ import { TiMessages } from "react-icons/ti";
 import useConversation from "../../zustand/useConversation";
 import { useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
+import useGetMessages from '../../hooks/useGetMessages'
 const MessageContainer = () => {
   const {selectedConversation, setSelectedConversation} = useConversation();
-
   useEffect(() => {
     return () => setSelectedConversation(null);
   }, [setSelectedConversation]);
@@ -23,7 +23,7 @@ const MessageContainer = () => {
                 <span className="text-gray-900 font-bold">{selectedConversation?.fullname}</span>
             </div>
 
-            <Messages/>
+            <Messages/> 
             <MessageInput/>
         </>
         )}

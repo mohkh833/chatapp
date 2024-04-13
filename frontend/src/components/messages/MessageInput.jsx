@@ -1,24 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsSend } from 'react-icons/bs';
 import { MdEmojiEmotions } from "react-icons/md";
-
+import { MdOutlineMarkChatRead } from "react-icons/md";
 import useSendMessage from '../../hooks/useSendMessage';
 import FileUploader from './FileUploader';
-
+import useReadMessage from '../../hooks/useReadMessage';
 import EmojiPicker from 'emoji-picker-react';
-
-
+import useListenToReadMessage from "../../hooks/useListenToReadMessage"
+import useGetMessages from '../../hooks/useGetMessages'
+import useConversation from '../../zustand/useConversation';
 const MessageInput = () => {
 	const [ message, setMessage ] = useState('');
 	const { loading, sendMessage } = useSendMessage();
+	const {readMessage} = useReadMessage();
 	const [showPicker, setShowPicker] = useState(false);
-	const [inputStr, setInputStr] = useState("");
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!message) return;
 		setMessage(message)
 		await sendMessage(message);
 		setMessage('');
+		setIsRead(false)
 	};
 
 	const onEmojiClick = (event, emojiObject) => {
@@ -26,6 +28,10 @@ const MessageInput = () => {
         setShowPicker(false)
     }
 
+	const handleReadMessage = async () => {
+		await readMessage()
+	}
+	
 	return (
 		<form className="px-4 my-3" onSubmit={handleSubmit}>
 			<div className="w-full relative">
@@ -37,10 +43,10 @@ const MessageInput = () => {
 					onChange={(e) => setMessage(e.target.value)}
 				/>
 				<div className="absolute inset-y-0 end-0 flex items-center pe-3 gap-3">
-					{/* <EmojiPicker /> */}
+					
 					<MdEmojiEmotions  className="cursor-pointer ml-5" onClick={() => setShowPicker(!showPicker)}/>
 					
-					
+					<MdOutlineMarkChatRead className='cursor-pointer' onClick={() => handleReadMessage()} />
 					<FileUploader />
 					<button type="submit">{loading ? <div className="loading loading-spinner" /> : <BsSend />}</button>
 				</div>
@@ -55,9 +61,9 @@ const MessageInput = () => {
 						<div />
 					</div>
 			)}	
-			
+				
 		</form>
-
+	
 		
 	);
 };

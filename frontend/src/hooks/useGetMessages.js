@@ -4,8 +4,7 @@ import toast from 'react-hot-toast'
 
 const useGetMessages = () => {
     const [loading, setLoading] = useState(false);
-    const {messages, setMessages, selectedConversation} = useConversation();
-
+    const {messages, setMessages, selectedConversation, setIsRead, isRead} = useConversation();
     useEffect(()=>{
         const getMessages = async () => {
             setLoading(true);
@@ -14,17 +13,28 @@ const useGetMessages = () => {
                 const data = await res.json();
                 if(data.error) throw new Error(data.error);
                 setMessages(data)
+                
+                
+                // console.log(isRead)
             } catch (err){
                 toast.error(err.message);
             } finally {
                 setLoading(false);
             }
         }
-        if(selectedConversation?._id)
-            getMessages();
-    }, [selectedConversation?._id, setMessages]);
 
-    return {messages, loading}
+        
+        if(selectedConversation?._id){
+            getMessages();
+           
+        }
+       
+            
+    }, [selectedConversation?._id, setMessages, setIsRead]);
+
+
+
+    return {messages, loading, isRead}
 }
 
 export default useGetMessages

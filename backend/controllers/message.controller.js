@@ -22,6 +22,7 @@ export const sendMessage = async(req,res) => {
         const newMessage = new Message({
             senderId,
             receiverId,
+            conversationId: conversation._id,
             message
         })
 
@@ -59,10 +60,11 @@ export const getMessages = async (req, res) => {
 
         const messages = conversation.messages
 
+        // console.log(conversation)
         res.status(200).json(messages)
     } catch(err){
-        console.log("Error in getMessages controller: ", error.message);
-		res.status(500).json({ error: "Internal server error" });
+        console.log("Error in getMessages controller: ", err.message);
+		res.status(500).json({ err: "Internal server error" });
     }
 }
 
@@ -90,6 +92,7 @@ export const uploadImage = async (req, res) => {
             senderId: req.user._id,
             receiverId: req.params.id,
             message: data.url,
+            conversationId: conversation._id,
             isImage: true
         })
 
@@ -109,5 +112,42 @@ export const uploadImage = async (req, res) => {
     } catch(err){
         console.log("Error in uploadImage controller: ", err.message);
         res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const readMessage = async(req,res) => {
+    try {
+        const {id: receiverId} = req.params;
+        const senderId = req.user._id;
+        
+        const conversation = await Conversation.findOne({
+            participants: {$all: [senderId, receiverId]}
+        }).populate("messages")
+        
+        const value = conversation
+        const id = value.messages[value.messages.length-1]._id
+
+        const message = await Message.findByIdAndUpdate(id, {isRead: true},{new:true});
+
+        if(!message) {
+            return res.status(404).send({err:"No message to read"})
+        }
+
+        const newConversation = await Conversation.findOne({
+            participants: {$all: [senderId, receiverId]}
+        }).populate("messages")
+
+        const receiverSocketId = getReceiverSocket(receiverId)
+
+        if(receiverSocketId) {
+            // io.to(<socketid>).emit() used to send events to specific client
+            io.to(receiverSocketId).emit("read", {
+                newMessages: newConversation.messages
+            })
+        }
+
+        res.status(200).json(message)
+    } catch (err) {
+        res.status(500).json({err: "Internal Server Error"})
     }
 }
